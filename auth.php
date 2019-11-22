@@ -2,9 +2,30 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Authentication</title>
+    <title>Login</title>
+    <style>
+      input {
+        display: block;
+      }
+      p {
+        width: 25%;
+        padding: 5px;
+      }
+      .success {
+        background-color: lightgreen;
+      }
+      .fail {
+        background-color: darksalmon;
+      }
+    </style>
   </head>
   <body>
+    <h2>Login</h2>
+    <form action="auth.php" method="post">
+      <input type="text" name="username">
+      <input type="password" name="password">
+      <input type="submit" name="submit" value="Iniciar sesión">
+    </form>
     <?php
       if ($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST["username"]) and isset($_POST["password"])) {
         $hostname = "localhost";
@@ -15,13 +36,13 @@
 
         $_username = $_POST["username"];
         $_password = hash("sha256", $_POST["password"]);
-        $query = $pdo->prepare("SELECT * FROM usuarios WHERE username = '$_username' and password = '$_password'");
-        $query -> execute();
+        $query = $pdo->prepare("SELECT * FROM usuarios WHERE username = :username and password = :password");
+        $query -> execute(array('username' => $_username, 'password' => $_password));
         $row = $query -> fetch();
         if ($row !== false) {
-          echo "<p>OK</p>";
+          echo "<p class='success'>OK</p>";
         } else {
-          echo "<p>KO</p>";
+          echo "<p class 'fail'>KO</p>";
         }
       }
      ?>
